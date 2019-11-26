@@ -6,8 +6,8 @@ const cors = require('cors');
 const logger = require('morgan');
 const knex = require('./db/knex');
 
-const users = require('./routes/users');
-const checkIns = require('./routes/check-ins');
+const users = require('./routes/users_routes');
+const checkIns = require('./routes/check_ins_routes');
 
 const app = express();
 
