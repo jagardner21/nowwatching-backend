@@ -11,33 +11,29 @@ exports.getOneCheckIn = function(req, res){
         .where('id', req.params.id)
         .then(checkIn => {
             if(checkIn.length === 0){
-                res.send(404, "Check-in Not Found")
+                res.status(404).send("Check-in Not Found")
             } else {
                 res.json(checkIn)
             }
         })
 }
 
-//I think this is needed because it will require interacting with the join table
-// exports.getCheckInsOneUser = function(req, res){
-// }
+exports.getCheckInsOneUser = function(req, res){
+    knex('check_ins')
+        .where('user_id', req.params.id)
+        .then(checkIns => {
+            if(checkIns.length === 0){
+                res.send("No Check-Ins Yet.")
+            } else{
+                res.json(checkIns)
+            }
+        })           
+}
 
 exports.addCheckIn = function(req, res){
-    let { movie_name, rating, review_body } = req.body
     knex('check_ins')
-        .insert({
-            "movie_name": movie_name,
-            "rating": rating,
-            "review_body": review_body
-        })
-        .returning("*")
-        .then(newCheckIn => {
-            knex('users_check_ins')
-                .insert({
-                    user_id: req.body.user_id,
-                    check_in_id: newCheckIn[0].id
-                })
-        })
+        .insert(req.body)
+        .returning("*")        
         .then(newCheckIn => res.json(newCheckIn))
 }
 
@@ -55,9 +51,6 @@ exports.updateCheckIn = function(req, res){
 
 //change to req.body.id?
 exports.deleteCheckIn = function(req, res){
-    knex('users_check_ins')
-        .del()   
-        .where("check_in_id", req.params.id) 
     knex('check_ins')
         .del()
         .where('id', req.params.id)

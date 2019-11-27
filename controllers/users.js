@@ -11,7 +11,7 @@ exports.getOneUser = function(req, res){
         .where('id', req.params.id)
         .then(user => {
             if(user.length === 0){
-                res.send(404, "User Not Found")
+                res.status(404).send("User Not Found")
             } else {
                 res.json(user)
             }
@@ -38,15 +38,15 @@ exports.updateUser = function(req, res){
 }
 
 //change to req.body.id?
-
-//NEED HELP WITH CASCADING DELETIONS
 exports.deleteUser = function(req, res){
-    let usersCheckIns = knex('users_check_ins')
-        .where('user_id', req.params.id)
-        .then(console.log('USERS CHECK INS', usersCheckIns))
-    knex('users_check_ins')
-        .where('user_id', req.params.id)
+    knex('check_ins')
         .del()
-        .returning('*')
-        .then(deleteUser => res.json(deleteUser))
+        .where('user_id', req.params.id)
+        .then(() => {
+            knex('users')
+            .del()
+            .where('id', req.params.id)
+            .returning('*')
+            .then(deletedUser => res.json(deletedUser))
+        })
 }
