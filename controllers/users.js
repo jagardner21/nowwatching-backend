@@ -5,6 +5,18 @@ exports.getAllUsers = function(req, res){
         .then(users => res.json(users))
 }
 
+exports.getUserCheckIns = function(req, res){
+    knex('check_ins')
+        .where('user_id', req.params.id)
+        .then(checkIns => {
+            if(checkIns.length === 0){
+                res.send("No Check-Ins Yet.")
+            } else{
+                res.json(checkIns)
+            }
+        })           
+}
+
 //change this from req.params.id to req.body.id?
 exports.getOneUser = function(req, res){
     knex('users')

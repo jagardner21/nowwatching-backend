@@ -18,18 +18,6 @@ exports.getOneCheckIn = function(req, res){
         })
 }
 
-exports.getCheckInsOneUser = function(req, res){
-    knex('check_ins')
-        .where('user_id', req.params.id)
-        .then(checkIns => {
-            if(checkIns.length === 0){
-                res.send("No Check-Ins Yet.")
-            } else{
-                res.json(checkIns)
-            }
-        })           
-}
-
 exports.addCheckIn = function(req, res){
     knex('check_ins')
         .insert(req.body)
